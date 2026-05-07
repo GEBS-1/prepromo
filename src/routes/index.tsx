@@ -1,4 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import {
   MessageSquare, Bell, FileEdit, CheckCircle2, Sparkles, Send,
@@ -9,9 +8,7 @@ import {
 import { useState } from "react";
 import heroImg from "@/assets/hero.png";
 
-export const Route = createFileRoute("/")({ component: Index });
-
-const TG = "PLACEHOLDER_TELEGRAM_BOT_LINK";
+const TG = "https://t.me/Test_agent_AI_companion_bot";
 
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
@@ -324,7 +321,7 @@ function Footer() {
   );
 }
 
-function Index() {
+export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background">
       <Nav />

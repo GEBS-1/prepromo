@@ -8,7 +8,7 @@ import {
 import { useState } from "react";
 import heroImg from "@/assets/hero.png";
 
-const TG = "https://t.me/Test_agent_AI_companion_bot";
+const TG = import.meta.env.VITE_TG_BOT_URL ?? "https://t.me/Test_agent_AI_companion_bot";
 
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
@@ -48,16 +48,24 @@ function Hero() {
         <motion.div {...fadeUp}>
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-card border border-border shadow-soft text-xs font-medium text-muted-foreground mb-6">
             <Sparkles className="w-3.5 h-3.5 text-primary" />
-            ИИ-помощник для коммуникаций
+            Ассистент для переписок
           </div>
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] mb-6">
-            <span className="text-gradient">Comrade AI</span>
+            <span className="text-foreground">Ассистент, который ведёт</span>
             <br />
-            <span className="text-foreground">помощник для переписок и задач</span>
+            <span className="text-gradient">диалоги за вас</span>
           </h1>
-          <p className="text-lg text-muted-foreground max-w-xl mb-8 leading-relaxed">
-            Создавайте заметки, ставьте напоминания, ведите задачи по людям и не теряйте важное в сообщениях, постах и рабочих коммуникациях.
-          </p>
+          <div className="text-lg text-muted-foreground max-w-xl mb-8 leading-relaxed space-y-3">
+            <p>
+              Создаёте агента под цель (“дожать отчёт”, “согласовать встречу”) — он ведёт переписку по контексту, напоминает и доводит до результата.
+            </p>
+            <p className="font-medium text-foreground/90">
+              Отправка сообщений — только после вашего подтверждения.
+            </p>
+            <p className="text-sm">
+              Подключение Telegram нужно, чтобы агент работал в ваших диалогах. Это делается один раз.
+            </p>
+          </div>
           <div className="flex flex-wrap gap-3">
             <a href={TG} className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-gradient-primary text-primary-foreground font-medium shadow-elegant hover:shadow-glow transition-all hover:-translate-y-0.5">
               <Send className="w-4 h-4" /> Попробовать в Telegram
@@ -103,16 +111,21 @@ function Card({ icon: Icon, title, desc, badge }: any) {
 
 function Features() {
   const items = [
-    { icon: FileText, title: "Заметки за вас", desc: "Фиксируйте важные мысли, договорённости, идеи и рабочие детали прямо через чат." },
-    { icon: Bell, title: "Напоминания", desc: "Ставьте напоминания по времени, людям или задачам, чтобы не забывать важные действия." },
-    { icon: FileEdit, title: "Черновики сообщений", desc: "Помощник готовит текст сообщения, а вы сами подтверждаете отправку." },
-    { icon: CheckCircle2, title: "Контроль договорённостей", desc: "Следите за тем, кто что обещал, когда вернуться к вопросу и какой следующий шаг." },
-    { icon: Search, title: "Поиск главного", desc: "Comrade AI читает посты, сообщения и обновления, выделяя главное в краткие выводы.", badge: "В разработке" },
+    { icon: MessageSquare, title: "Агенты в ваших диалогах", desc: "Один агент — одна цель. Он держит контекст и предлагает следующий шаг в переписке." },
+    { icon: FileEdit, title: "Черновики ответов как человек", desc: "Агент формулирует коротко и по делу — вы подтверждаете отправку перед тем, как что‑то уйдёт." },
+    { icon: CheckCircle2, title: "Контроль договорённостей", desc: "Помнит, кто что обещал, и возвращает к вопросу вовремя." },
+    { icon: Bell, title: "Дожим до результата", desc: "Если молчат — аккуратно напомнит по сценарию, пока задача не будет закрыта." },
+    { icon: Search, title: "Сводка “Today”", desc: "Что важно сегодня: кому написать, где дедлайны и где нет ответа.", badge: "Скоро" },
+    { icon: FileText, title: "Заметки и напоминания", desc: "Фиксируйте идеи и ставьте напоминания прямо в Telegram, чтобы ничего не терять." },
   ];
   return (
     <section id="features" className="py-28 px-6">
       <div className="max-w-7xl mx-auto">
-        <SectionTitle kicker="Что такое Comrade AI" title="Один помощник для ежедневных коммуникаций" subtitle="Comrade AI помогает превращать хаос сообщений, задач и напоминаний в понятную систему действий." />
+        <SectionTitle
+          kicker="Что умеют агенты"
+          title="Агенты для переписок и задач"
+          subtitle="Один агент — одна цель. Он держит контекст, пишет “как человек” и напоминает, пока не получит результат."
+        />
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
           {items.map((it, i) => <Card key={i} {...it} />)}
         </div>
@@ -123,15 +136,16 @@ function Features() {
 
 function HowItWorks() {
   const steps = [
-    { n: "01", title: "Пишете задачу боту", desc: "«Напомни завтра написать клиенту» или «сохрани заметку по проекту»." },
-    { n: "02", title: "Получаете план или черновик", desc: "Бот помогает оформить задачу, создать напоминание или подготовить текст сообщения." },
-    { n: "03", title: "Подтверждаете действие", desc: "Ничего не отправляется без вашего подтверждения. Вы контролируете результат." },
+    { n: "01", title: "Ставите цель агенту", desc: "«Дожми отчёт», «согласуй встречу», «собери документы» — в одном сообщении." },
+    { n: "02", title: "Агент читает контекст", desc: "Учитывает историю переписки и формирует следующий ход." },
+    { n: "03", title: "Получаете черновик", desc: "Короткое сообщение + понятный следующий шаг." },
+    { n: "04", title: "Подтверждаете отправку", desc: "Без вашего «ОК» ничего не уйдёт адресату." },
   ];
   return (
     <section id="how" className="py-28 px-6 bg-gradient-soft">
       <div className="max-w-7xl mx-auto">
-        <SectionTitle kicker="Как это работает сейчас" title="Начните пользоваться в Telegram" subtitle="Первый MVP работает через Telegram-бота. Это быстрый способ протестировать основную ценность." />
-        <div className="grid md:grid-cols-3 gap-5">
+        <SectionTitle kicker="Как это работает" title="Как агент ведёт диалог" subtitle="Всё управление — в Telegram. Агент предлагает, вы подтверждаете." />
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
           {steps.map((s, i) => (
             <motion.div key={i} {...fadeUp} transition={{ duration: 0.6, delay: i * 0.1 }} className="relative p-8 rounded-3xl bg-card shadow-soft">
               <div className="text-5xl font-display font-bold text-gradient mb-4">{s.n}</div>
@@ -142,7 +156,10 @@ function HowItWorks() {
         </div>
         <motion.div {...fadeUp} className="mt-12 p-8 rounded-3xl bg-card border border-border shadow-elegant text-center text-muted-foreground">
           <MessageSquare className="w-10 h-10 mx-auto mb-3 text-primary" />
-          PLACEHOLDER_TELEGRAM_SCREENSHOT
+          <div className="text-sm space-y-2">
+            <div className="font-medium text-foreground/90">Нет автоотправки.</div>
+            <div>Comrade AI всегда показывает черновик перед отправкой.</div>
+          </div>
         </motion.div>
       </div>
     </section>
@@ -151,17 +168,17 @@ function HowItWorks() {
 
 function UseCases() {
   const items = [
-    { icon: Bell, title: "Напомнить о договорённости", desc: "Вернуться к человеку завтра и не забыть, что он обещал." },
-    { icon: MessageSquare, title: "Уточнить статус", desc: "Подготовить сообщение: узнать, готов ли документ, задача или ответ." },
-    { icon: Calendar, title: "Назначить созвон", desc: "Сформулировать сообщение и зафиксировать время встречи." },
-    { icon: Inbox, title: "Собрать документы", desc: "Напомнить контакту прислать файл, ссылку или недостающую информацию." },
-    { icon: Target, title: "Сопровождать дедлайн", desc: "Держать задачу под контролем до выполнения." },
-    { icon: Search, title: "Найти главное в потоке", desc: "Выделять важные посты, новости, сообщения и делать краткую сводку.", badge: "В разработке" },
+    { icon: MessageSquare, title: "Дожать отчёт / статус", desc: "Спросить, уточнить сроки и вернуться к вопросу, если нет ответа." },
+    { icon: Calendar, title: "Согласовать встречу", desc: "Уточнить время, собрать подтверждение и зафиксировать договорённость." },
+    { icon: Inbox, title: "Собрать документы", desc: "Попросить файл/ссылку/данные и мягко напомнить, если задерживают." },
+    { icon: Bell, title: "Вернуться к договорённости", desc: "Не забыть, что обещали, и вовремя напомнить о следующем шаге." },
+    { icon: Target, title: "Сопроводить дедлайн", desc: "Держать задачу под контролем до выполнения и закрыть её результатом." },
+    { icon: Search, title: "Разгрузить поток", desc: "Сводка важного из переписок и уведомления “что делать сегодня”.", badge: "Скоро" },
   ];
   return (
     <section className="py-28 px-6">
       <div className="max-w-7xl mx-auto">
-        <SectionTitle title="Где Comrade AI помогает каждый день" />
+        <SectionTitle title="Где это особенно полезно" />
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
           {items.map((it, i) => <Card key={i} {...it} />)}
         </div>
@@ -172,8 +189,8 @@ function UseCases() {
 
 function Security() {
   const points = [
-    "Исходящие сообщения не отправляются без подтверждения.",
-    "Подключение Telegram нужно только для работы с вашими контактами.",
+    "Черновик перед отправкой — всегда (без автоотправки).",
+    "Подключение Telegram нужно, чтобы агент работал в ваших диалогах.",
     "Вы управляете сохранёнными данными.",
     "Можно удалять заметки, задачи и историю в любой момент.",
     "Автоматизация строится вокруг безопасности и прозрачности.",
@@ -185,8 +202,8 @@ function Security() {
           <div className="w-20 h-20 rounded-3xl bg-gradient-primary grid place-items-center shadow-glow mb-6">
             <Shield className="w-10 h-10 text-primary-foreground" />
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold mb-5">Пользователь всегда сохраняет контроль</h2>
-          <p className="text-lg text-muted-foreground">Comrade AI не действует скрыто. Помощник предлагает, напоминает и готовит черновики, но важные действия подтверждает пользователь.</p>
+          <h2 className="text-4xl md:text-5xl font-bold mb-5">Вы полностью контролируете отправку</h2>
+          <p className="text-lg text-muted-foreground">Агент ведёт диалог и предлагает следующий шаг, но не отправляет сообщения без подтверждения.</p>
         </motion.div>
         <motion.ul {...fadeUp} className="space-y-3">
           {points.map((p, i) => (
@@ -203,7 +220,7 @@ function Security() {
 
 function Roadmap() {
   const steps = [
-    { icon: Send, title: "Telegram MVP", desc: "Заметки, напоминания, задачи, черновики сообщений." },
+    { icon: Send, title: "Telegram MVP", desc: "Агенты для диалогов + черновики + подтверждение отправки." },
     { icon: Globe, title: "WhatsApp, MAX, Avito", desc: "Подключение новых каналов общения и задач." },
     { icon: Inbox, title: "Email и посты", desc: "Работа с письмами, обновлениями, постами и информационным потоком." },
     { icon: LayoutDashboard, title: "Единый web-интерфейс", desc: "Один кабинет для всех коммуникаций, задач, заметок и отчётов." },
@@ -259,8 +276,9 @@ function ForWhom() {
 
 function FAQ() {
   const qa = [
-    { q: "Что можно делать уже сейчас?", a: "Сейчас можно тестировать Telegram-версию: заметки, напоминания, задачи и черновики сообщений." },
-    { q: "Comrade AI сам пишет людям?", a: "Нет. Помощник может подготовить черновик, но отправка происходит только после подтверждения пользователя." },
+    { q: "Comrade AI ведёт диалоги за меня?", a: "Он ведёт диалог как агент: читает контекст, предлагает следующий шаг и готовит текст. Отправка — только после вашего подтверждения." },
+    { q: "Это автоответчик?", a: "Нет. Это агенты под конкретную цель (контакт/задача), которые действуют по контексту и сценарию. Автоотправки нет." },
+    { q: "Что нужно, чтобы агент работал в моих диалогах?", a: "Нужно один раз подключить Telegram через /connect — чтобы видеть ваши диалоги и готовить ответы по контексту." },
     { q: "Это только Telegram-бот?", a: "Нет. Telegram — первый этап. Далее планируется WhatsApp, MAX, Avito, Email и единый web-интерфейс." },
     { q: "Можно ли удалять данные?", a: "Да. Вы можете управлять своими заметками, задачами и сохранённой информацией." },
     { q: "Что будет дальше?", a: "Развитие мультиплатформенности, web-кабинет, обработка постов и сообщений, выделение главного и персональные отчёты." },
@@ -294,8 +312,8 @@ function FinalCTA() {
       <motion.div {...fadeUp} className="max-w-5xl mx-auto rounded-[2.5rem] bg-gradient-primary p-12 md:p-20 text-center shadow-elegant relative overflow-hidden">
         <div className="absolute inset-0 opacity-30" style={{ background: "radial-gradient(circle at 30% 30%, white, transparent 50%)" }} />
         <div className="relative">
-          <h2 className="text-4xl md:text-6xl font-bold text-primary-foreground mb-5">Попробуйте Comrade AI уже сейчас</h2>
-          <p className="text-lg text-primary-foreground/90 max-w-xl mx-auto mb-8">Начните с Telegram-бота: создайте первую заметку, напоминание или задачу.</p>
+          <h2 className="text-4xl md:text-6xl font-bold text-primary-foreground mb-5">Запустите первого агента за 2 минуты</h2>
+          <p className="text-lg text-primary-foreground/90 max-w-xl mx-auto mb-8">Опишите цель — получите первый черновик — подтвердите отправку.</p>
           <a href={TG} className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-card text-foreground font-semibold shadow-elegant hover:scale-105 transition-transform">
             <Send className="w-5 h-5" /> Попробовать в Telegram
           </a>
